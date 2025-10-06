@@ -19,6 +19,52 @@
         .tex-accent-bg { background-color: #06b6d4; } /* Cyan */
         .tex-accent-hover:hover { background-color: #0891b2; }
 
+        /* --- NAVBAR STYLES --- */
+        .navbar-transition {
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        /* Initial State: Transparent, White Text */
+        .navbar-initial {
+            background-color: transparent;
+            color: white;
+            box-shadow: none;
+        }
+        /* Scrolled/Hovered State: Solid White, Dark Text */
+        .navbar-solid {
+            background-color: white;
+            color: #1f2937; /* Dark Gray */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Link styling for both states */
+        .nav-link {
+            transition: color 0.3s;
+        }
+        /* Green Highlight on Hover */
+        .nav-link:hover {
+            color: #10b981; /* Tailwind Emerald 500 */
+        }
+        /* Style the CTA button in the dark state to remain high contrast */
+        .navbar-solid .cta-button {
+            background-color: #06b6d4;
+            color: white;
+        }
+        .navbar-solid .cta-button:hover {
+            background-color: #0891b2;
+        }
+        
+        /* Make the logo visible in both states */
+        .navbar-initial .logo-text-dark,
+        .navbar-solid .logo-text-light {
+            display: none;
+        }
+        .navbar-solid .logo-text-dark,
+        .navbar-initial .logo-text-light {
+            display: block;
+        }
+
+
         /* Subtle hover effect for product cards */
         .product-card-hover { transition: transform 0.3s, box-shadow 0.3s; }
         .product-card-hover:hover {
@@ -26,7 +72,7 @@
             box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.1), 0 4px 6px -2px rgba(30, 58, 138, 0.05);
         }
 
-        /* --- VCI Flow Visualization Styles --- */
+        /* --- VCI Flow Visualization Styles (Remaining unchanged) --- */
         @keyframes flow-animation {
             0% { stroke-dashoffset: 0; }
             100% { stroke-dashoffset: 2000; } 
@@ -135,6 +181,10 @@
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth' });
             }
+            // Close mobile menu after navigation
+            document.getElementById('mobile-menu').classList.add('hidden');
+            document.getElementById('menu-toggle-open').classList.remove('hidden');
+            document.getElementById('menu-toggle-close').classList.add('hidden');
         }
         
         /**
@@ -253,11 +303,48 @@
             });
         }
         
+        // Function to toggle mobile menu visibility
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const openIcon = document.getElementById('menu-toggle-open');
+            const closeIcon = document.getElementById('menu-toggle-close');
+
+            menu.classList.toggle('hidden');
+            openIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
+        }
+
+        // Function to handle scroll state of the navbar
+        function handleScroll() {
+            const header = document.getElementById('main-header');
+            const heroSection = document.getElementById('home');
+            
+            // Get the bottom edge of the hero section relative to the viewport
+            const heroBottom = heroSection.getBoundingClientRect().bottom;
+
+            if (window.scrollY > 50 || heroBottom < 0) {
+                // Scrolled past the top or past the hero section
+                header.classList.add('navbar-solid', 'text-gray-800');
+                header.classList.remove('navbar-initial', 'text-white');
+            } else {
+                // At the top of the page, over the hero section
+                header.classList.add('navbar-initial', 'text-white');
+                header.classList.remove('navbar-solid', 'text-gray-800');
+            }
+        }
+
+
         window.onload = function() {
             // Element declarations are now safe inside window.onload
             const aiText = document.getElementById('aiText');
             const fullTextContainer = document.getElementById('fullTextContainer');
             const starContainer = document.getElementById('starContainer');
+            const header = document.getElementById('main-header');
+            
+            // Initial state check for navbar (in case page loads halfway down)
+            handleScroll(); 
+            // Add the scroll listener
+            window.addEventListener('scroll', handleScroll);
 
             // Set initial state for "TEX" text to be visible
             if(aiText) {
@@ -286,44 +373,64 @@
 <body class="antialiased text-gray-800">
 
     <!-- Navbar & Primary CTA (Sticky for lead generation) -->
-    <header class="sticky top-0 z-50 bg-white shadow-md">
+    <!-- Initial classes: fixed, top-0, w-full, z-50, navbar-initial, navbar-transition -->
+    <header id="main-header" class="fixed top-0 w-full z-50 navbar-initial navbar-transition">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <!-- Logo/Brand Name -->
-            <a href="#" class="text-3xl font-extrabold tex-primary-text flex items-center">
-                TEX
-                <span class="text-xl font-normal ml-2 text-gray-500">VCI Solutions</span>
+            <a href="#" class="text-3xl font-extrabold flex items-center">
+                <!-- Logo for light background (scrolled/hovered state) -->
+                <span class="logo-text-dark tex-primary-text flex items-center">
+                    TEX
+                    <span class="text-xl font-normal ml-2 text-gray-500">VCI Solutions</span>
+                </span>
+                <!-- Logo for dark background (initial state) -->
+                <span class="logo-text-light text-white flex items-center">
+                    TEX
+                    <span class="text-xl font-normal ml-2 opacity-80">VCI Solutions</span>
+                </span>
             </a>
             
-            <!-- Navigation Links - Aligned with Sitemap Blocks -->
+            <!-- Desktop Navigation Links -->
             <nav class="hidden md:flex space-x-8">
-                <a href="#about" onclick="scrollToSection('about')" class="text-gray-600 hover:text-cyan-600 transition duration-300 font-medium">We Texan</a>
-                <a href="#products" onclick="scrollToSection('products')" class="text-gray-600 hover:text-cyan-600 transition duration-300 font-medium">Products</a>
-                <a href="#applications" onclick="scrollToSection('applications')" class="text-gray-600 hover:text-cyan-600 transition duration-300 font-medium">Applications</a>
-                <a href="#resources" onclick="scrollToSection('resources')" class="text-gray-600 hover:text-cyan-600 transition duration-300 font-medium">Resources</a>
+                <a href="#about" onclick="scrollToSection('about')" class="nav-link font-medium">We Texan</a>
+                <a href="#products" onclick="scrollToSection('products')" class="nav-link font-medium">Products</a>
+                <a href="#applications" onclick="scrollToSection('applications')" class="nav-link font-medium">Applications</a>
+                <a href="#resources" onclick="scrollToSection('resources')" class="nav-link font-medium">Resources</a>
             </nav>
 
             <!-- Primary CTA Button (Contact Us) -->
-            <button onclick="scrollToSection('contact')" class="hidden md:block tex-accent-bg text-white font-semibold py-2 px-6 rounded-lg shadow-lg tex-accent-hover transition duration-300">
+            <button onclick="scrollToSection('contact')" class="hidden md:block cta-button tex-accent-bg text-white font-semibold py-2 px-6 rounded-lg shadow-lg tex-accent-hover transition duration-300">
                 Contact Us
             </button>
 
-            <!-- Mobile Menu Placeholder -->
-            <button class="md:hidden text-gray-600 hover:text-cyan-600 transition duration-300">
-                <!-- Hamburger Icon (Simple SVG) -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+                <!-- Open Icon -->
+                <svg id="menu-toggle-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <!-- Close Icon (Hidden initially) -->
+                <svg id="menu-toggle-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 hidden"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <nav id="mobile-menu" class="hidden md:hidden bg-white shadow-xl py-4 border-t border-gray-100">
+            <a href="#about" onclick="scrollToSection('about')" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 font-medium">We Texan</a>
+            <a href="#products" onclick="scrollToSection('products')" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 font-medium">Products</a>
+            <a href="#applications" onclick="scrollToSection('applications')" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 font-medium">Applications</a>
+            <a href="#resources" onclick="scrollToSection('resources')" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 font-medium">Resources</a>
+            <a href="#contact" onclick="scrollToSection('contact')" class="block px-4 py-3 mt-2 text-white tex-accent-bg text-center font-semibold mx-4 rounded-lg">Contact Us</a>
+        </nav>
     </header>
 
     <!-- 1. Hero Section: Value Proposition Focus -->
-    <section id="home" class="tex-primary-bg text-white pt-24 pb-32 relative">
+    <section id="home" class="tex-primary-bg text-white pt-24 pb-32 relative min-h-screen flex items-center justify-center">
         <!-- Video Container -->
         <div class="hero-video-container">
             <!-- NOTE: Use 'videos/vci_loop.mp4' as the recommended path in your GitHub repo -->
             <video autoplay loop muted playsinline class="hero-video">
                 <!-- Placeholder source for demonstration. Replace 'videos/vci_loop.mp4' with your actual file path. -->
                 <source src="videos/vci_loop.mp4" type="video/mp4">
-                Your browser does not support the video tag.
+                Your browser does support the video tag.
             </video>
             <!-- Add a dark overlay to ensure text contrast over the video -->
             <div class="absolute inset-0 bg-black opacity-40 z-5"></div>
@@ -474,7 +581,6 @@
                 <div class="bg-orange-500 bg-opacity-80 p-6 rounded-lg shadow-xl hover:bg-opacity-100 transition duration-300">
                     <h3 class="text-xl font-bold">Aerospace</h3>
                     <p class="text-sm opacity-90 mt-1">Sensitive alloys and long-term turbine preservation.</p>
-                </p>
                 </div>
                 <!-- Link: Electronics -->
                 <div class="bg-orange-500 bg-opacity-80 p-6 rounded-lg shadow-xl hover:bg-opacity-100 transition duration-300">
