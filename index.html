@@ -344,11 +344,17 @@
 
             // Video fix: explicitly attempt to play the video element
             if (heroVideo) {
-                // Attempt to load and play. Muted videos usually bypass autoplay restrictions.
+                // 1. Ensure the video element is ready (has loaded metadata) before playing.
+                heroVideo.addEventListener('loadeddata', () => {
+                    heroVideo.play().catch(error => {
+                        console.warn("Video autoplay failed even after loading data:", error);
+                    });
+                });
+                // 2. Load the video source explicitly.
                 heroVideo.load();
+                // 3. Fallback: Try playing immediately in case loadeddata event never fires quickly
                 heroVideo.play().catch(error => {
-                    // This catch handles cases where autoplay is strictly blocked 
-                    console.warn("Video autoplay blocked. Please check the video path and browser autoplay policies.");
+                     // Initial play attempt may fail, but loadeddata should catch it
                 });
             }
             
@@ -437,10 +443,9 @@
     <section id="home" class="tex-primary-bg text-white pt-24 pb-32 relative min-h-screen flex items-center justify-center">
         <!-- Video Container -->
         <div class="hero-video-container">
-            <!-- NOTE: Use 'videos/vci_loop.mp4' as the recommended path in your GitHub repo -->
+            <!-- IMPORTANT: Changed source to the root relative path (/) -->
             <video id="heroVideo" autoplay loop muted playsinline class="hero-video">
-                <!-- IMPORTANT: Changed source to absolute path for GitHub Pages compatibility -->
-                <source src="/Tex-VCI/videos/vci_loop.mp4" type="video/mp4">
+                <source src="/videos/vci_loop.mp4" type="video/mp4">
                 Your browser does support the video tag.
             </video>
             <!-- Add a dark overlay to ensure text contrast over the video -->
