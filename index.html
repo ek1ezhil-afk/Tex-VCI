@@ -64,6 +64,32 @@
             display: block;
         }
 
+        /* --- MOBILE MENU OVERLAY STYLES --- */
+        #mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 80%; /* Takes 80% of screen width */
+            max-width: 320px;
+            height: 100vh;
+            background-color: rgba(30, 58, 138, 0.9); /* Dark Blue with Transparency */
+            box-shadow: -4px 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 60; /* Above the fixed navbar (z-50) */
+            padding-top: 6rem;
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu-link {
+            color: white;
+            font-size: 1.25rem;
+            padding: 0.75rem 1rem;
+            display: block;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background-color 0.2s;
+        }
+        .mobile-menu-link:hover {
+            background-color: rgba(6, 182, 212, 0.2); /* Cyan transparent hover */
+            color: #06b6d4;
+        }
 
         /* Subtle hover effect for product cards */
         .product-card-hover { transition: transform 0.3s, box-shadow 0.3s; }
@@ -182,7 +208,7 @@
                 element.scrollIntoView({ behavior: 'smooth' });
             }
             // Close mobile menu after navigation
-            document.getElementById('mobile-menu').classList.add('hidden');
+            document.getElementById('mobile-menu').classList.add('translate-x-full');
             document.getElementById('menu-toggle-open').classList.remove('hidden');
             document.getElementById('menu-toggle-close').classList.add('hidden');
         }
@@ -309,9 +335,15 @@
             const openIcon = document.getElementById('menu-toggle-open');
             const closeIcon = document.getElementById('menu-toggle-close');
 
-            menu.classList.toggle('hidden');
-            openIcon.classList.toggle('hidden');
-            closeIcon.classList.toggle('hidden');
+            // Toggle visibility using translate-x
+            const isHidden = menu.classList.toggle('translate-x-full'); 
+            
+            // Toggle icons
+            openIcon.classList.toggle('hidden', !isHidden);
+            closeIcon.classList.toggle('hidden', isHidden);
+            
+            // Optional: Prevent body scroll when menu is open
+            document.body.style.overflowY = isHidden ? '' : 'hidden';
         }
 
         // Function to handle scroll state of the navbar
@@ -339,8 +371,12 @@
             const aiText = document.getElementById('aiText');
             const fullTextContainer = document.getElementById('fullTextContainer');
             const starContainer = document.getElementById('starContainer');
-            const header = document.getElementById('main-header');
             const heroVideo = document.getElementById('heroVideo'); // Get the video element
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            // Initialize mobile menu to hidden state
+            mobileMenu.classList.add('translate-x-full');
+
 
             // Video fix: explicitly attempt to play the video element
             if (heroVideo) {
@@ -433,14 +469,7 @@
             </button>
         </div>
 
-        <!-- Mobile Menu Dropdown -->
-        <nav id="mobile-menu" class="hidden md:hidden bg-white shadow-xl py-4 border-t border-gray-100">
-            <a href="#about" onclick="scrollToSection('about')" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 font-medium">We Texan</a>
-            <a href="#products" onclick="scrollToSection('products')" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 font-medium">Products</a>
-            <a href="#applications" onclick="scrollToSection('applications')" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 font-medium">Applications</a>
-            <a href="#resources" onclick="scrollToSection('resources')" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 font-medium">Resources</a>
-            <a href="#contact" onclick="scrollToSection('contact')" class="block px-4 py-3 mt-2 text-white tex-accent-bg text-center font-semibold mx-4 rounded-lg">Contact Us</a>
-        </nav>
+        <!-- Mobile Menu Overlay (Moved to the end of body for high z-index and fixed position) -->
     </header>
 
     <!-- 1. Hero Section: Value Proposition Focus -->
@@ -711,6 +740,17 @@
             </div>
         </div>
     </footer>
-
+    
+    <!-- Mobile Menu Overlay (New Structure) -->
+    <!-- Starts off-screen (translate-x-full) and slides in from the right -->
+    <nav id="mobile-menu" class="fixed top-0 right-0 w-80 max-w-xs h-full bg-blue-900 bg-opacity-95 shadow-2xl z-50 transform translate-x-full transition duration-300 ease-in-out md:hidden">
+        <div class="p-6 pt-20">
+            <a href="#about" onclick="scrollToSection('about')" class="mobile-menu-link">We Texan</a>
+            <a href="#products" onclick="scrollToSection('products')" class="mobile-menu-link">Products</a>
+            <a href="#applications" onclick="scrollToSection('applications')" class="mobile-menu-link">Applications</a>
+            <a href="#resources" onclick="scrollToSection('resources')" class="mobile-menu-link">Resources</a>
+            <a href="#contact" onclick="scrollToSection('contact')" class="mobile-menu-link mt-4 tex-accent-bg rounded-lg text-center font-bold">Contact Us</a>
+        </div>
+    </nav>
 </body>
 </html>
