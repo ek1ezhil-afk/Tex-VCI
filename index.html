@@ -49,8 +49,8 @@
         .nav-link {
             transition: color 0.3s;
         }
-        /* Green Highlight on Hover */
-        .nav-link:hover {
+        /* Green Highlight on Hover (Applies to ALL desktop links, including dropdown) */
+        .nav-link:hover, .desktop-sub-link:hover {
             color: #10b981; /* Tailwind Emerald 500 */
         }
         /* Style the CTA button in the dark state to remain high contrast */
@@ -89,22 +89,95 @@
             /* Add backdrop filter for a modern frosted glass effect against the content */
             backdrop-filter: blur(8px) brightness(0.9);
             -webkit-backdrop-filter: blur(8px) brightness(0.9);
+            overflow-y: auto; /* Allow scrolling for long menu content */
         }
+
         .mobile-menu-link {
             /* Now using a translucent block element for the link background for contrast */
             background-color: rgba(255, 255, 255, 0.15); /* Light translucent block */
             color: white;
-            font-size: 1.25rem;
+            font-size: 1.125rem; /* Slightly smaller for nested content */
             padding: 0.75rem 1rem;
             display: block;
             margin-bottom: 0.5rem;
             border-radius: 0.5rem;
             transition: background-color 0.2s, color 0.2s; 
+            font-weight: 600; /* Bold for main links */
         }
+
         .mobile-menu-link:hover {
             background-color: rgba(255, 255, 255, 0.3); /* Lighter translucent hover */
             color: #dc2626; /* Red hover color */
         }
+
+        /* Style for Collapsible Menu Headers (Summary) */
+        #mobile-menu details > summary {
+            list-style: none; /* Hide default arrow */
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background-color: rgba(30, 58, 138, 0.5); /* Primary dark blue header */
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border-radius: 0.5rem;
+            position: relative;
+            transition: background-color 0.2s;
+        }
+
+        /* Custom arrow/chevron */
+        #mobile-menu details > summary::after {
+            content: '▶';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%) rotate(0deg);
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        #mobile-menu details[open] > summary::after {
+            transform: translateY(-50%) rotate(90deg);
+        }
+        
+        /* Style for Nested Links (Sub-menu) */
+        #mobile-menu .sub-menu {
+            margin-top: -0.25rem;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        #mobile-menu .sub-menu .mobile-menu-link {
+            font-size: 1rem;
+            padding-left: 1.5rem; /* Indentation for sub-links */
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* --- DESKTOP DROPDOWN STYLES --- */
+        .desktop-dropdown {
+            /* Initially hidden, shown on group-hover */
+            display: none;
+            position: absolute;
+            top: 100%; /* Below the main link */
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 200px;
+            z-index: 50;
+        }
+        .desktop-sub-link {
+            padding: 0.5rem 1rem;
+            display: block;
+            white-space: nowrap;
+            font-weight: 500;
+            /* Text color adjusts dynamically based on navbar state */
+        }
+        .desktop-sub-link-header {
+             padding: 0.75rem 1rem 0.25rem;
+             font-size: 0.9rem;
+             font-weight: 700;
+             color: #4b5563; /* Gray-600 */
+        }
+
 
         /* Subtle hover effect for product cards */
         .product-card-hover { transition: transform 0.3s, box-shadow 0.3s; }
@@ -197,7 +270,7 @@
         const moduleIds = ['module-1', 'module-2', 'module-3'];
         const pathIds = ['path1', 'path2', 'path3'];
         let isFullText = false;
-        let lastScrollY = 0; // NEW: Global variable to track scroll position
+        let lastScrollY = 0; // Global variable to track scroll position
         const scrollThreshold = 100; // Pixels to scroll before hiding
 
         /**
@@ -364,7 +437,7 @@
         }
 
         /**
-         * NEW: Function to handle scroll state of the navbar (smart hide/show)
+         * Function to handle scroll state of the navbar (smart hide/show)
          */
         function handleScroll() {
             const header = document.getElementById('main-header');
@@ -480,12 +553,65 @@
                 </span>
             </a>
             
-            <!-- Desktop Navigation Links -->
-            <nav class="hidden md:flex space-x-8">
-                <a href="#about" onclick="scrollToSection('about')" class="nav-link font-medium">We Texan</a>
-                <a href="#products" onclick="scrollToSection('products')" class="nav-link font-medium">Products</a>
-                <a href="#applications" onclick="scrollToSection('applications')" class="nav-link font-medium">Applications</a>
-                <a href="#resources" onclick="scrollToSection('resources')" class="nav-link font-medium">Resources</a>
+            <!-- Desktop Navigation Links (UPDATED) -->
+            <nav class="hidden md:flex space-x-2 lg:space-x-8">
+                
+                <!-- 1. WE TEXAN Dropdown -->
+                <div class="relative group">
+                    <a href="#about" class="nav-link font-medium py-2 px-3 block">We Texan</a>
+                    <div class="desktop-dropdown group-hover:block bg-white shadow-xl rounded-lg p-2 mt-0.5">
+                        <a href="#about" class="desktop-sub-link tex-primary-text">About Us</a>
+                        <a href="#" class="desktop-sub-link tex-primary-text">Our Sites</a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <span class="desktop-sub-link-header">Integrated Ops</span>
+                        <a href="#" class="desktop-sub-link tex-primary-text !pl-4">Tex Extrusion</a>
+                        <a href="#" class="desktop-sub-link tex-primary-text !pl-4">Trum Packtech</a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <a href="#about" class="desktop-sub-link tex-primary-text">Sustainability</a>
+                        <a href="#" class="desktop-sub-link tex-primary-text">Bio degradable</a>
+                        <a href="#resources" class="desktop-sub-link tex-primary-text">Join With Us</a>
+                    </div>
+                </div>
+
+                <!-- 2. PRODUCTS Dropdown -->
+                <div class="relative group">
+                    <a href="#products" class="nav-link font-medium py-2 px-3 block">Products</a>
+                    <div class="desktop-dropdown group-hover:block bg-white shadow-xl rounded-lg p-2 mt-0.5">
+                        <a href="#products" class="desktop-sub-link tex-primary-text">VCI Films</a>
+                        <a href="#" class="desktop-sub-link tex-primary-text">Special Films</a>
+                        <a href="#products" class="desktop-sub-link tex-primary-text">VCI Papers</a>
+                        <a href="#" class="desktop-sub-link tex-primary-text">Poly Films</a>
+                        <a href="#" class="desktop-sub-link tex-primary-text">Rust Prevention Oils</a>
+                        <a href="#" class="desktop-sub-link tex-primary-text">Aluminium Foils</a>
+                        <a href="#" class="desktop-sub-link tex-primary-text">Desiccants</a>
+                        <a href="#" class="desktop-sub-link tex-primary-text">PP Sheets</a>
+                        <a href="#" class="desktop-sub-link tex-primary-text">Wooden Pallets</a>
+                        <a href="#" class="desktop-sub-link tex-primary-text">Returnable packaging</a>
+                    </div>
+                </div>
+
+                <!-- 3. APPLICATIONS Dropdown -->
+                <div class="relative group">
+                    <a href="#applications" class="nav-link font-medium py-2 px-3 block">Applications</a>
+                    <div class="desktop-dropdown group-hover:block bg-white shadow-xl rounded-lg p-2 mt-0.5">
+                        <a href="#applications" class="desktop-sub-link tex-primary-text">Automotive</a>
+                        <a href="#applications" class="desktop-sub-link tex-primary-text">Aerospace</a>
+                        <a href="#applications" class="desktop-sub-link tex-primary-text">Electronics</a>
+                        <a href="#applications" class="desktop-sub-link tex-primary-text">Oil & Gas</a>
+                        <a href="#applications" class="desktop-sub-link tex-primary-text">Forming</a>
+                    </div>
+                </div>
+
+                <!-- 4. RESOURCES Dropdown -->
+                <div class="relative group">
+                    <a href="#resources" class="nav-link font-medium py-2 px-3 block">Resources</a>
+                    <div class="desktop-dropdown group-hover:block bg-white shadow-xl rounded-lg p-2 mt-0.5">
+                        <a href="#resources" class="desktop-sub-link tex-primary-text">Request PDS & MSDS</a>
+                        <a href="#resources" class="desktop-sub-link tex-primary-text">Case Studies</a>
+                        <a href="#resources" class="desktop-sub-link tex-primary-text">Ruststoppers Preservation Guidelines</a>
+                        <a href="#resources" class="desktop-sub-link tex-primary-text">Request Webinar</a>
+                    </div>
+                </div>
             </nav>
 
             <!-- Primary CTA Button (Contact Us) -->
@@ -775,14 +901,73 @@
     </footer>
     
     <!-- Mobile Menu Overlay (New Structure) -->
-    <!-- Starts off-screen (translate-x-full) and slides in from the right -->
-    <nav id="mobile-menu" class="fixed top-0 right-0 w-80 max-w-xs h-full bg-blue-900 bg-opacity-95 shadow-2xl z-50 transform translate-x-full transition duration-300 ease-in-out md:hidden">
-        <div class="p-6 pt-20">
-            <a href="#about" onclick="scrollToSection('about')" class="mobile-menu-link">We Texan</a>
-            <a href="#products" onclick="scrollToSection('products')" class="mobile-menu-link">Products</a>
-            <a href="#applications" onclick="scrollToSection('applications')" class="mobile-menu-link">Applications</a>
-            <a href="#resources" onclick="scrollToSection('resources')" class="mobile-menu-link">Resources</a>
-            <a href="#contact" onclick="scrollToSection('contact')" class="mobile-menu-link mt-4 tex-accent-bg rounded-lg text-center font-bold">Contact Us</a>
+    <nav id="mobile-menu" class="fixed top-0 right-0 w-80 max-w-xs h-full shadow-2xl z-50 transform translate-x-full transition duration-300 ease-in-out md:hidden">
+        <div class="p-4 pt-20">
+            
+            <!-- HOME (Direct Link) -->
+            <a href="#home" onclick="scrollToSection('home')" class="mobile-menu-link">Home</a>
+            
+            <!-- WE TEXAN (Collapsible) -->
+            <details class="mb-2">
+                <summary>We Texan</summary>
+                <div class="sub-menu">
+                    <a href="#about" onclick="scrollToSection('about')" class="mobile-menu-link">About Us</a>
+                    <a href="#" class="mobile-menu-link">Our Sites</a>
+                    <details class="mb-2 ml-4">
+                        <summary class="mobile-menu-link !text-base !font-semibold !p-3 !mb-0 !rounded-none !bg-transparent">Integrated Ops</summary>
+                        <div class="sub-menu !p-0">
+                            <a href="#" class="mobile-menu-link !mt-0">Tex Extrusion</a>
+                            <a href="#" class="mobile-menu-link">Trum Packtech</a>
+                        </div>
+                    </details>
+                    <a href="#about" class="mobile-menu-link">Sustainability</a>
+                    <a href="#" class="mobile-menu-link">Bio degradable</a>
+                    <a href="#resources" class="mobile-menu-link">Join With Us</a>
+                </div>
+            </details>
+
+            <!-- PRODUCTS (Collapsible) -->
+            <details class="mb-2">
+                <summary>Products</summary>
+                <div class="sub-menu">
+                    <a href="#products" onclick="scrollToSection('products')" class="mobile-menu-link">VCI Films</a>
+                    <a href="#" class="mobile-menu-link">Special Films</a>
+                    <a href="#" class="mobile-menu-link">VCI Papers</a>
+                    <a href="#" class="mobile-menu-link">Poly Films</a>
+                    <a href="#" class="mobile-menu-link">Rust Prevention Oils</a>
+                    <a href="#" class="mobile-menu-link">Aluminium Foils</a>
+                    <a href="#" class="mobile-menu-link">Desiccants</a>
+                    <a href="#" class="mobile-menu-link">PP Sheets</a>
+                    <a href="#" class="mobile-menu-link">Wooden Pallets</a>
+                    <a href="#" class="mobile-menu-link">Returnable packaging</a>
+                </div>
+            </details>
+
+            <!-- APPLICATION (Collapsible) -->
+            <details class="mb-2">
+                <summary>Application</summary>
+                <div class="sub-menu">
+                    <a href="#applications" class="mobile-menu-link">Automotive</a>
+                    <a href="#applications" class="mobile-menu-link">Aerospace</a>
+                    <a href="#applications" class="mobile-menu-link">Electronics</a>
+                    <a href="#applications" class="mobile-menu-link">Oil & Gas</a>
+                    <a href="#applications" class="mobile-menu-link">Forming</a>
+                </div>
+            </details>
+
+            <!-- RESOURCES (Collapsible) -->
+            <details class="mb-2">
+                <summary>Resources</summary>
+                <div class="sub-menu">
+                    <a href="#resources" class="mobile-menu-link">Request PDS & MSDS</a>
+                    <a href="#resources" class="mobile-menu-link">Case Studies</a>
+                    <a href="#resources" class="mobile-menu-link">Ruststoppers Preservation Guidelines</a>
+                    <a href="#resources" class="mobile-menu-link">Request Webinar</a>
+                </div>
+            </details>
+
+            <!-- CONTACT US (Primary CTA) -->
+            <a href="#contact" onclick="scrollToSection('contact')" class="mobile-menu-link mt-4 tex-accent-bg rounded-lg text-center font-bold !text-white !bg-cyan-600 hover:!bg-cyan-700">Contact Us</a>
         </div>
     </nav>
 </body>
