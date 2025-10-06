@@ -154,30 +154,12 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
         
-        /* --- DESKTOP DROPDOWN STYLES --- */
-        .desktop-dropdown {
-            /* Initially hidden, shown on group-hover */
-            display: none;
-            position: absolute;
-            top: 100%; /* Below the main link */
-            left: 50%;
-            transform: translateX(-50%);
-            min-width: 200px;
-            z-index: 50;
-        }
-        .desktop-sub-link {
-            padding: 0.5rem 1rem;
-            display: block;
-            white-space: nowrap;
-            font-weight: 500;
-            /* Text color adjusts dynamically based on navbar state */
-        }
-        .desktop-sub-link-header {
-             padding: 0.75rem 1rem 0.25rem;
-             font-size: 0.9rem;
-             font-weight: 700;
-             color: #4b5563; /* Gray-600 */
-        }
+        /* --- DESKTOP DROPDOWN STYLES (REMOVED) --- */
+        /*
+        .desktop-dropdown { ... }
+        .desktop-sub-link { ... }
+        .desktop-sub-link-header { ... }
+        */
 
 
         /* Subtle hover effect for product cards */
@@ -554,65 +536,16 @@
                 </span>
             </a>
             
-            <!-- Desktop Navigation Links (UPDATED) -->
-            <nav class="hidden md:flex space-x-2 lg:space-x-8">
+            <!-- Desktop Navigation Links (REVERTED TO FLAT LINKS) -->
+            <nav class="hidden md:flex space-x-8">
                 
-                <!-- 1. WE TEXAN Dropdown -->
-                <div class="relative group">
-                    <a href="#about" class="nav-link font-medium py-2 px-3 block">We Texan</a>
-                    <div class="desktop-dropdown group-hover:block bg-white shadow-xl rounded-lg p-2 mt-0.5">
-                        <a href="#about" class="desktop-sub-link tex-primary-text">About Us</a>
-                        <a href="#" class="desktop-sub-link tex-primary-text">Our Sites</a>
-                        <div class="border-t border-gray-100 my-1"></div>
-                        <span class="desktop-sub-link-header">Integrated Ops</span>
-                        <a href="#" class="desktop-sub-link tex-primary-text !pl-4">Tex Extrusion</a>
-                        <a href="#" class="desktop-sub-link tex-primary-text !pl-4">Trum Packtech</a>
-                        <div class="border-t border-gray-100 my-1"></div>
-                        <a href="#about" class="desktop-sub-link tex-primary-text">Sustainability</a>
-                        <a href="#" class="desktop-sub-link tex-primary-text">Bio degradable</a>
-                        <a href="#resources" class="desktop-sub-link tex-primary-text">Join With Us</a>
-                    </div>
-                </div>
+                <a href="#about" onclick="scrollToSection('about')" class="nav-link font-medium">We Texan</a>
 
-                <!-- 2. PRODUCTS Dropdown -->
-                <div class="relative group">
-                    <a href="#products" class="nav-link font-medium py-2 px-3 block">Products</a>
-                    <div class="desktop-dropdown group-hover:block bg-white shadow-xl rounded-lg p-2 mt-0.5">
-                        <a href="#products" class="desktop-sub-link tex-primary-text">VCI Films</a>
-                        <a href="#" class="desktop-sub-link tex-primary-text">Special Films</a>
-                        <a href="#products" class="desktop-sub-link tex-primary-text">VCI Papers</a>
-                        <a href="#" class="desktop-sub-link tex-primary-text">Poly Films</a>
-                        <a href="#" class="desktop-sub-link tex-primary-text">Rust Prevention Oils</a>
-                        <a href="#" class="desktop-sub-link tex-primary-text">Aluminium Foils</a>
-                        <a href="#" class="desktop-sub-link tex-primary-text">Desiccants</a>
-                        <a href="#" class="desktop-sub-link tex-primary-text">PP Sheets</a>
-                        <a href="#" class="desktop-sub-link tex-primary-text">Wooden Pallets</a>
-                        <a href="#" class="desktop-sub-link tex-primary-text">Returnable packaging</a>
-                    </div>
-                </div>
+                <a href="#products" onclick="scrollToSection('products')" class="nav-link font-medium">Products</a>
 
-                <!-- 3. APPLICATIONS Dropdown -->
-                <div class="relative group">
-                    <a href="#applications" class="nav-link font-medium py-2 px-3 block">Applications</a>
-                    <div class="desktop-dropdown group-hover:block bg-white shadow-xl rounded-lg p-2 mt-0.5">
-                        <a href="#applications" class="desktop-sub-link tex-primary-text">Automotive</a>
-                        <a href="#applications" class="desktop-sub-link tex-primary-text">Aerospace</a>
-                        <a href="#applications" class="desktop-sub-link tex-primary-text">Electronics</a>
-                        <a href="#applications" class="desktop-sub-link tex-primary-text">Oil & Gas</a>
-                        <a href="#applications" class="desktop-sub-link tex-primary-text">Forming</a>
-                    </div>
-                </div>
+                <a href="#applications" onclick="scrollToSection('applications')" class="nav-link font-medium">Applications</a>
 
-                <!-- 4. RESOURCES Dropdown -->
-                <div class="relative group">
-                    <a href="#resources" class="nav-link font-medium py-2 px-3 block">Resources</a>
-                    <div class="desktop-dropdown group-hover:block bg-white shadow-xl rounded-lg p-2 mt-0.5">
-                        <a href="#resources" class="desktop-sub-link tex-primary-text">Request PDS & MSDS</a>
-                        <a href="#resources" class="desktop-sub-link tex-primary-text">Case Studies</a>
-                        <a href="#resources" class="desktop-sub-link tex-primary-text">Ruststoppers Preservation Guidelines</a>
-                        <a href="#resources" class="desktop-sub-link tex-primary-text">Request Webinar</a>
-                    </div>
-                </div>
+                <a href="#resources" onclick="scrollToSection('resources')" class="nav-link font-medium">Resources</a>
             </nav>
 
             <!-- Primary CTA Button (Contact Us) -->
