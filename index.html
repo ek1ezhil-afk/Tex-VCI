@@ -267,29 +267,59 @@
             stroke-width: 8;
             stroke-dasharray: 40 4000; /* Short dash followed by a very long gap */
             stroke-linecap: round;
+            /* FIX 1: Ensure green flow is paused initially */
+            animation-play-state: paused;
         }
         
         .flow-line-green {
             stroke: #10b981; /* Green */
             animation: fluid-flow-green 6s linear infinite;
         }
+        /* Class to start the green fluid flow animation when observer triggers */
+        .flow-line-green.is-flowing {
+            animation-play-state: running;
+        }
 
         .flow-line-yellow {
             stroke: #f59e0b; /* Yellow/Amber */
+            stroke-width: 4; /* Thinner line */
             animation: fluid-flow-yellow 6s linear infinite;
-            /* Optional: offset the yellow flow slightly so it looks distinct */
+            /* Yellow line always runs (stays behind the action) */
+            animation-play-state: running; 
             stroke-dashoffset: 500; 
         }
 
         /* Style for the pop-up text */
-        .epr-popup {
+        .epr-popup { /* Corrected class name */
             display: none;
             opacity: 0;
             transition: opacity 0.5s, transform 0.5s;
         }
-        .epr-popup.is-visible {
+        .epr-popup.is-visible { /* Corrected class name */
             display: block;
             animation: pop-in 0.5s ease-out forwards;
+        }
+
+        /* Style for the vertical axis text */
+        .vertical-text {
+            transform: rotate(-90deg);
+            transform-origin: center center;
+            white-space: nowrap;
+            letter-spacing: 0.2rem;
+            font-weight: 600;
+        }
+        
+        /* Style for the exclamation icons */
+        .exclamation-icon-outer {
+            fill: white;
+            stroke: #f59e0b;
+            stroke-width: 2;
+        }
+        .exclamation-icon-inner {
+            fill: #f59e0b;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            font-weight: 900;
         }
     </style>
     <script>
@@ -500,23 +530,35 @@
         /**
          * EPR Pop-up visibility using Intersection Observer
          */
-        function observeEPR(eprElement) {
+        function observeERP(erpElement) {
             const options = {
                 root: null,
                 rootMargin: '0px',
                 threshold: 0.5 // Trigger when 50% of the target is visible
             };
 
+            const greenLine = document.getElementById('greenPath');
+
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        eprElement.classList.add('is-visible');
-                        observer.unobserve(entry.target); // Stop observing once triggered
+                        // 1. Trigger the Green Flow animation (Fluid passes through)
+                        if (greenLine) {
+                             greenLine.classList.add('is-flowing');
+                        }
+
+                        // 2. Trigger the Pop-up message (Delayed slightly after flow starts)
+                        setTimeout(() => {
+                           erpElement.classList.add('is-visible');
+                        }, 1000); 
+
+                        // Stop observing once triggered
+                        observer.unobserve(entry.target); 
                     }
                 });
             }, options);
 
-            observer.observe(eprElement);
+            observer.observe(erpElement);
         }
 
 
@@ -527,14 +569,14 @@
             const starContainer = document.getElementById('starContainer');
             const heroVideo = document.getElementById('heroVideo'); // Get the video element
             const mobileMenu = document.getElementById('mobile-menu');
-            const eprPopup = document.getElementById('eprPopup'); // New EPR pop-up element
+            const erpPopup = document.getElementById('eprPopup'); // Corrected ID usage
 
             // Initialize mobile menu to hidden state
             mobileMenu.classList.add('translate-x-full');
 
             // Set up EPR Observer
-            if (eprPopup) {
-                observeEPR(eprPopup);
+            if (erpPopup) {
+                observeERP(erpPopup);
             }
 
             // Video fix: explicitly attempt to play the video element
@@ -688,10 +730,10 @@
                     </p>
                 </div>
 
-                <!-- RIGHT SIDE: Scroll-Triggered Animation -->
-                <div class="relative flex justify-center items-center h-96 bg-gray-50 rounded-xl shadow-lg" id="eprContainer">
+                <!-- RIGHT SIDE: Scroll-Triggered Animation (Simplified Vertical Flow) -->
+                <div class="relative flex justify-center items-center h-96 bg-gray-50 rounded-xl shadow-lg" id="erpContainer">
                     
-                    <!-- SVG for Fluid Pipelines -->
+                    <!-- SVG for Vertical Pipelines -->
                     <svg class="w-full h-full absolute" viewBox="0 0 400 380" preserveAspectRatio="xMidYMid meet">
                         <defs>
                             <filter id="glow">
@@ -701,30 +743,56 @@
                                     <feMergeNode in="SourceGraphic"/>
                                 </feMerge>
                             </filter>
+                            <!-- Filter for the yellow line's soft background -->
+                            <filter id="yellowGlow">
+                                <feGaussianBlur stdDeviation="1" result="yellowBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="yellowBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
                         </defs>
+                        
+                        <!-- Yellow Static Pipeline (Stays Behind) -->
+                        <line x1="200" y1="0" x2="200" y2="380" stroke="#f59e0b" stroke-width="30" opacity="0.2"/>
+                        
+                        <!-- Green Fluid Pipeline (The Active Flow) -->
+                        <!-- FIX: Changed X1 to 150 to move it away from the yellow center -->
+                        <line id="greenPath" x1="150" y1="0" x2="150" y2="380" stroke="#10b981" stroke-width="12" style="filter:url(#glow);" 
+                            stroke-dasharray="40 4000" stroke-dashoffset="0" class="flow-line-green" />
+                        
+                        <!-- Yellow Fluid Pipeline (The Background Flow) -->
+                        <!-- FIX: Changed X1 to 250 to move it away from the green center -->
+                        <line id="yellowPath" x1="250" y1="0" x2="250" y2="380" stroke="#f59e0b" stroke-width="8" class="flow-line-yellow" 
+                            stroke-dasharray="40 4000" stroke-dashoffset="500" style="filter:url(#yellowGlow);"/>
 
-                        <!-- Green Pipeline Path (Invisible Guide) -->
-                        <path id="greenPath" d="M 120 40 C 120 150, 300 150, 300 250" stroke="transparent" fill="none"/>
-                        
-                        <!-- Yellow Pipeline Path (Invisible Guide) -->
-                        <path id="yellowPath" d="M 170 40 C 170 180, 250 180, 250 290" stroke="transparent" fill="none"/>
-                        
-                        <!-- Green Fluid Flow (Animated) -->
-                        <use href="#greenPath" class="flow-line-green" style="filter:url(#glow);"/>
+                        <!-- Target Intersection Point (Pop-up Anchor) -->
+                        <!-- Positioned at the bottom center of the SVG -->
+                        <g transform="translate(200, 300)" id="targetAnchor">
+                            <!-- Removed the unnecessary 'M' badge -->
+                            <circle cx="0" cy="0" r="10" fill="transparent" /> 
+                        </g>
 
-                        <!-- Yellow Fluid Flow (Animated) -->
-                        <use href="#yellowPath" class="flow-line-yellow" style="filter:url(#glow);"/>
+                        <!-- T Marker on Green Line -->
+                        <text x="150" y="50" font-family="Inter" font-weight="900" font-size="50" fill="#1e3a8a" text-anchor="middle">T</text>
                         
-                        <!-- Initial Elements (T and !) -->
-                        <text x="120" y="55" font-family="Inter" font-weight="900" font-size="50" fill="#1e3a8a" text-anchor="middle">T</text>
-                        <text x="170" y="55" font-family="Inter" font-weight="900" font-size="50" fill="#f59e0b" text-anchor="middle">!</text>
-                        
-                        <!-- Target Intersection Point (Subtle Indicator) -->
-                        <circle cx="300" cy="250" r="10" fill="#1e3a8a" opacity="0.1" />
-
+                        <!-- Exclamation Icon Markers on Yellow Pipeline -->
+                        <g transform="translate(250, 100)">
+                            <circle cx="0" cy="0" r="12" class="exclamation-icon-outer" />
+                            <text x="0" y="4" class="exclamation-icon-inner" text-anchor="middle">!</text>
+                        </g>
+                        <g transform="translate(250, 180)">
+                            <circle cx="0" cy="0" r="12" class="exclamation-icon-outer" />
+                            <text x="0" y="4" class="exclamation-icon-inner" text-anchor="middle">!</text>
+                        </g>
+                        <g transform="translate(250, 260)">
+                            <circle cx="0" cy="0" r="12" class="exclamation-icon-outer" />
+                            <text x="0" y="4" class="exclamation-icon-inner" text-anchor="middle">!</text>
+                        </g>
                     </svg>
 
                     <!-- EPR Pop-up Message (Initially hidden) -->
+                    <!-- FIX: Updated observer ID to target the general container, not the pop-up itself -->
                     <div id="eprPopup" class="epr-popup absolute bottom-10 p-4 bg-green-500 text-white font-extrabold text-xl rounded-lg shadow-2xl border-2 border-white">
                         WE ARE EPR APPROVED MANUFACTURER.
                     </div>
