@@ -344,18 +344,22 @@
 
             // Video fix: explicitly attempt to play the video element
             if (heroVideo) {
-                // 1. Ensure the video element is ready (has loaded metadata) before playing.
-                heroVideo.addEventListener('loadeddata', () => {
+                // IMPORTANT FIX: Use canplaythrough to ensure enough data is loaded
+                const attemptPlay = () => {
                     heroVideo.play().catch(error => {
-                        console.warn("Video autoplay failed even after loading data:", error);
+                        console.warn("Video autoplay blocked or failed:", error);
+                        // Optional: show a small, subtle play button overlay here if needed.
                     });
-                });
-                // 2. Load the video source explicitly.
+                };
+                
+                // 1. Wait until the browser reports the video can play through
+                heroVideo.addEventListener('canplaythrough', attemptPlay);
+                
+                // 2. Load the video source explicitly (Crucial for mobile/autoplay)
                 heroVideo.load();
-                // 3. Fallback: Try playing immediately in case loadeddata event never fires quickly
-                heroVideo.play().catch(error => {
-                     // Initial play attempt may fail, but loadeddata should catch it
-                });
+                
+                // 3. Fallback/Immediate attempt: try playing right away (often works if muted)
+                attemptPlay();
             }
             
             // Initial state check for navbar (in case page loads halfway down)
@@ -443,8 +447,9 @@
     <section id="home" class="tex-primary-bg text-white pt-24 pb-32 relative min-h-screen flex items-center justify-center">
         <!-- Video Container -->
         <div class="hero-video-container">
-            <!-- IMPORTANT: Changed source to the root relative path (/) -->
-            <video id="heroVideo" autoplay loop muted playsinline class="hero-video">
+            <!-- IMPORTANT: Changed source to the absolute root relative path (/) -->
+            <video id="heroVideo" autoplay loop muted playsinline preload="auto" class="hero-video">
+                <!-- Changed source path to /videos/vci_loop.mp4 -->
                 <source src="/videos/vci_loop.mp4" type="video/mp4">
                 Your browser does support the video tag.
             </video>
