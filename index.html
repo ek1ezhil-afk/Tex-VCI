@@ -72,23 +72,30 @@
             width: 80%; /* Takes 80% of screen width */
             max-width: 320px;
             height: 100vh;
-            background-color: rgba(30, 58, 138, 0.9); /* Dark Blue with Transparency */
-            box-shadow: -4px 0 10px rgba(0, 0, 0, 0.3);
-            z-index: 60; /* Above the fixed navbar (z-50) */
+            /* FIX: Set to completely transparent to meet user request */
+            background-color: transparent; 
+            box-shadow: none;
+            z-index: 60; 
             padding-top: 6rem;
             transition: transform 0.3s ease-in-out;
+            /* Add backdrop filter for a modern frosted glass effect against the content */
+            backdrop-filter: blur(8px) brightness(0.9);
+            -webkit-backdrop-filter: blur(8px) brightness(0.9);
         }
         .mobile-menu-link {
+            /* Now using a translucent block element for the link background for contrast */
+            background-color: rgba(255, 255, 255, 0.15); /* Light translucent block */
             color: white;
             font-size: 1.25rem;
             padding: 0.75rem 1rem;
             display: block;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: background-color 0.2s, color 0.2s; /* Added color transition */
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, color 0.2s; 
         }
         .mobile-menu-link:hover {
-            background-color: rgba(6, 182, 212, 0.2); /* Cyan transparent hover */
-            color: #dc2626; /* Changed hover color to Red */
+            background-color: rgba(255, 255, 255, 0.3); /* Lighter translucent hover */
+            color: #dc2626; /* Red hover color */
         }
 
         /* Subtle hover effect for product cards */
@@ -740,7 +747,6 @@
             </div>
         </div>
     </footer>
-    
     
     <!-- Mobile Menu Overlay (New Structure) -->
     <!-- Starts off-screen (translate-x-full) and slides in from the right -->
