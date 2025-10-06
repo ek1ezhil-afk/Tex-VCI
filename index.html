@@ -75,6 +75,36 @@
         .text-out { opacity: 0; transform: translate(-50%, -50%) translateY(20px); transition: opacity 0.3s ease-out, transform 0.3s ease-out; }
         .text-in { opacity: 1; transform: translate(-50%, -50%) translateY(0); transition: opacity 0.3s ease-in, transform 0.3s ease-in; }
         #aiText { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.3s, transform 0.3s; }
+
+        /* --- Hero Video Styles --- */
+        .hero-video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            /* Optional: Dim the video slightly to keep text legible */
+            opacity: 0.6;
+        }
+
+        /* Ensure content layers are above the video */
+        #home .content-layer {
+            position: relative;
+            z-index: 10;
+        }
     </style>
     <script>
         const moduleIds = ['module-1', 'module-2', 'module-3'];
@@ -88,7 +118,7 @@
             event.preventDefault();
             const form = event.target;
             const messageBox = document.getElementById('message-box');
-            messageBox.textContent = `Thank you, ${form.companyName.value}! Your consultation request has been submitted.`;
+            messageBox.textContent = `Thank thank you, ${form.companyName.value}! Your consultation request has been submitted.`;
             messageBox.classList.remove('hidden');
             form.reset();
             
@@ -286,8 +316,21 @@
     </header>
 
     <!-- 1. Hero Section: Value Proposition Focus -->
-    <section id="home" class="tex-primary-bg text-white pt-24 pb-32">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-between">
+    <section id="home" class="tex-primary-bg text-white pt-24 pb-32 relative">
+        <!-- Video Container -->
+        <div class="hero-video-container">
+            <!-- NOTE: Use 'videos/vci_loop.mp4' as the recommended path in your GitHub repo -->
+            <video autoplay loop muted playsinline class="hero-video">
+                <!-- Placeholder source for demonstration. Replace 'videos/vci_loop.mp4' with your actual file path. -->
+                <source src="videos/vci_loop.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <!-- Add a dark overlay to ensure text contrast over the video -->
+            <div class="absolute inset-0 bg-black opacity-40 z-5"></div>
+        </div>
+
+        <!-- Content Layer (ensure z-index is high to sit above video) -->
+        <div class="content-layer max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-between relative z-10">
             <div class="lg:w-1/2 mb-10 lg:mb-0">
                 <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
                     Zero-Corrosion Transit. Guaranteed Asset Protection.
@@ -305,21 +348,9 @@
                 </div>
             </div>
             
-            <!-- Technical Visual Placeholder -->
-            <div class="lg:w-5/12 hidden lg:block">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" class="w-full h-auto">
-                    <rect x="50" y="50" width="300" height="200" rx="15" fill="#06b6d4" opacity="0.4"/>
-                    <rect x="120" y="100" width="160" height="100" rx="5" fill="#94a3b8"/>
-                    <circle cx="100" cy="80" r="4" fill="#1e3a8a">
-                        <animate attributeName="cx" values="100;300;100" dur="5s" repeatCount="indefinite" />
-                        <animate attributeName="cy" values="80;200;80" dur="5s" repeatCount="indefinite" />
-                    </circle>
-                    <circle cx="320" cy="120" r="4" fill="#1e3a8a" opacity="0.8">
-                        <animate attributeName="cx" values="320;80;320" dur="6s" repeatCount="indefinite" />
-                        <animate attributeName="cy" values="120;180;120" dur="6s" repeatCount="indefinite" />
-                    </circle>
-                    <text x="200" y="155" font-family="Inter" font-size="20" fill="#1e3a8a" text-anchor="middle" font-weight="bold">ASSET PROTECTED</text>
-                </svg>
+            <!-- Removed the old SVG placeholder -->
+            <div class="lg:w-5/12 hidden lg:block h-64">
+                <!-- Placeholder space for visual effect or future content -->
             </div>
         </div>
     </section>
@@ -443,6 +474,7 @@
                 <div class="bg-orange-500 bg-opacity-80 p-6 rounded-lg shadow-xl hover:bg-opacity-100 transition duration-300">
                     <h3 class="text-xl font-bold">Aerospace</h3>
                     <p class="text-sm opacity-90 mt-1">Sensitive alloys and long-term turbine preservation.</p>
+                </p>
                 </div>
                 <!-- Link: Electronics -->
                 <div class="bg-orange-500 bg-opacity-80 p-6 rounded-lg shadow-xl hover:bg-opacity-100 transition duration-300">
