@@ -10,7 +10,10 @@ const product = {
   imagePlaceholder: "https://placehold.co/800x400/29326d/fff?text=VCI+Film+Application", 
 };
 
-const TABS = [
+type TabId = 'overview' | 'benefits' | 'compliance' | 'properties' | 'formats' | 'sustainability';
+type Theme = 'light' | 'dark';
+
+const TABS: { id: TabId, label: string }[] = [
   { id: 'overview', label: 'Overview' },
   { id: 'benefits', label: 'Benefits' },
   { id: 'compliance', label: 'Compliance' },
@@ -35,7 +38,7 @@ const FORMATS = [
 
 // --- Sub-Components for Tab Content ---
 
-const BenefitsContent = ({ isDark }) => (
+const BenefitsContent = ({ isDark }: { isDark: boolean }) => (
   <div className="p-6 sm:p-8">
     <h3 className="text-2xl font-bold mb-6">Key Benefits</h3>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -52,7 +55,7 @@ const BenefitsContent = ({ isDark }) => (
   </div>
 );
 
-const FormatsContent = ({ isDark }) => (
+const FormatsContent = ({ isDark }: { isDark: boolean }) => (
   <div className="p-6 sm:p-8">
     <h3 className="text-2xl font-bold mb-6">Available Formats</h3>
     <div className="space-y-6">
@@ -75,7 +78,7 @@ const FormatsContent = ({ isDark }) => (
   </div>
 );
 
-const PlaceholderContent = ({ tabId }) => (
+const PlaceholderContent = ({ tabId }: { tabId: TabId }) => (
   <div className="p-8 text-center opacity-70 italic h-40 flex items-center justify-center">
     Content for "{TABS.find(t => t.id === tabId)?.label}" goes here.
   </div>
@@ -85,10 +88,10 @@ const PlaceholderContent = ({ tabId }) => (
 // --- Main Application Component ---
 const App = () => {
   // --- State Management ---
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+  const [theme, setTheme] = useState<Theme>(
+    () => (localStorage.getItem('theme') as Theme) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
   );
-  const [activeTab, setActiveTab] = useState(TABS[0].id);
+  const [activeTab, setActiveTab] = useState<TabId>(TABS[0].id);
 
   // --- Theme Toggle Logic ---
   const toggleTheme = () => {
