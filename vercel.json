@@ -1,11 +1,6 @@
 {
   "version": 2,
-  "build": {
-    "env": {
-      "VITE_BUILD_COMMAND": "tsc && vite build"
-    }
-  },
   "installCommand": "npm install --force",
-  "buildCommand": "npm run build",
+  "buildCommand": "tsc && vite build",
   "outputDirectory": "dist"
 }
