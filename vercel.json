@@ -2,10 +2,10 @@
   "version": 2,
   "build": {
     "env": {
-      "MY_VARIABLE": "value"
+      "VITE_BUILD_COMMAND": "tsc && vite build"
     }
   },
-  "routes": [
-    { "src": "/(.*)", "dest": "/index.html" }
-  ]
+  "installCommand": "npm install --force",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
 }
