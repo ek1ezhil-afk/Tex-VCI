@@ -1,5 +1,11 @@
 {
+  "version": 2,
   "build": {
-    "outputDirectory": "build"
-  }
+    "env": {
+      "MY_VARIABLE": "value"
+    }
+  },
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
 }
